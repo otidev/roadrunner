@@ -1,0 +1,3 @@
+This file lists all dependencies of this project and its license (in full form if not stated in header file).
+
+stb_image and stb_image_write use the MIT License or the public domain license: check in headers
