@@ -56,7 +56,7 @@ void rrInitImage(rrSurface* surf, char* filename) {
 	surf->blendMode = RR_MODE_NONE;
 }
 
-void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos) {
+void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos, float rotation) {
 	uint32_t* screenPixel = (uint32_t*)dstSurf->pixels;
 	uint32_t* imagePixel = (uint32_t*)srcSurf->pixels;
 
@@ -65,9 +65,16 @@ void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos) {
 		for (int x = 0; x < srcSurf->width; x++) {
 			if ((y + (int)pos.y) < dstSurf->height && (y + (int)pos.y) >= 0 && (x + (int)pos.x) < dstSurf->width && (x + (int)pos.x) >= 0) {
 				if (dstSurf->blendMode == RR_MODE_BLEND) {
-					_rrGetBlended(&screenPixel[(y + (int)pos.y) * dstSurf->width + (x + (int)pos.x)], imagePixel[y * srcSurf->width + x]);
+					_rrGetBlended(
+						&screenPixel[
+							((int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) + (int)pos.y) * dstSurf->width + ((int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y) + (int)pos.x)
+						],
+						imagePixel[y * srcSurf->width + x]
+					);
 				} else {
-					screenPixel[(y + (int)pos.y) * dstSurf->width + (x + (int)pos.x)] = imagePixel[y * srcSurf->width + x];
+					screenPixel[
+						((int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) + (int)pos.y) * dstSurf->width + ((int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y) + (int)pos.x)
+					] = imagePixel[y * srcSurf->width + x];
 					printf("%d\n", (y + (int)pos.y));
 				}
 			}
@@ -75,7 +82,7 @@ void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos) {
 	}
 }
 
-void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect) {
+void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect, float rotation) {
 	uint32_t* screenPixel = (uint32_t*)dstSurf->pixels + (((int)dstRect.y * dstSurf->width) + (int)dstRect.x);
 	uint32_t* imagePixel = (uint32_t*)srcSurf->pixels + (((int)srcRect.y * srcSurf->width) + (int)srcRect.x);
 
@@ -102,10 +109,16 @@ void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect
 	for (int y = 0; y < (int)dstRect.height; y++) {
 		for (int x = 0; x < (int)dstRect.width; x++) {
 			if ((y + (int)dstRect.y) < dstSurf->height && (y + (int)dstRect.y) >= 0 && (x + (int)dstRect.x) < dstSurf->width && (x + (int)dstRect.x) >= 0) {
+				int posY = (flipY ? (int)((dstRect.height - 1 - y) * yScale) : (int)(y * yScale));
+				int posX = (flipX ? (int)((dstRect.width - 1 - x) * xScale) : (int)(x * xScale));
 				if (dstSurf->blendMode == RR_MODE_BLEND) {
-					_rrGetBlended(&screenPixel[y * dstSurf->width + x], imagePixel[(flipY ? (int)((dstRect.height - 1 - y) * yScale) : (int)(y * yScale)) * (int)srcSurf->width + (flipX ? (int)((dstRect.width - 1 - x) * xScale) : (int)(x * xScale))]);
+					_rrGetBlended(&screenPixel[
+						(int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) * dstSurf->width + (int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y)
+					], imagePixel[posY * (int)srcSurf->width + posX]);
 				} else {
-					screenPixel[y * dstSurf->width + x] = imagePixel[(flipY ? (int)((dstRect.height - 1 - y) * yScale) : (int)(y * yScale)) * (int)srcSurf->width + (flipX ? (int)((dstRect.width - 1 - x) * xScale) : (int)(x * xScale))];
+					screenPixel[
+						(int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) * dstSurf->width + (int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y)
+					] = imagePixel[posY * (int)srcSurf->width + posX];
 				}
 			}
 		}

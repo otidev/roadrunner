@@ -23,16 +23,18 @@ void rrInitImage(rrSurface* surf, char* filename);
 // srcSurf - Source surface.
 // dstSurf - Destination surface.
 // pos - Position to render srcSurf in dstSurf.
+// rotation - How many degrees srcSurf should be spun.
 // NOTE: As of now, the alpha formula is Asrc = Adst.
-void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos);
+void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos, float rotation);
 
 // Blits a surface onto another surface, with scaling.
 // srcSurf - Source surface.
 // dstSurf - Destination surface.
 // srcRect - Rectangle in srcSurf where we should blit.
 // dstRect - Rectangle in dstSurf where we should blit.
+// rotation - How many degrees srcSurf should be spun.
 // NOTE: As of now, the alpha formula is Asrc = Adst.
-void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect);
+void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect, float rotation);
 
 // Draws a pixel on a surface.
 // pos - Pixel position.

@@ -17,3 +17,8 @@ A simple 2D software renderer written in C with no dependencies.
 - Line rendering
 - Simple image loading (with the help of stb_image(_write).h) and rendering
 - A endianness switcher (from RGBA to ABGR)
+
+## Problems
+
+- Sometimes line rendering breaks the program
+- Rotation is a bit faulty

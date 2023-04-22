@@ -11,7 +11,7 @@
 #define M_PI 3.141592
 #endif
 #define RAD2DEG M_PI / 360.0 * 2.0
-#define DEG2RAD 360.0 / M_PI / 2.0
+#define DEG2RAD M_PI / 180.0
 
 typedef enum rrBlendMode {
 	RR_MODE_BLEND = 0,
