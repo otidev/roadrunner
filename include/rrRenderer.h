@@ -107,4 +107,24 @@ void rrFreeSurface(rrSurface* surf);
 // blend - Blend mode to use.
 void rrSetBlendMode(rrSurface* surf, rrBlendMode blend);
 
+#ifdef RR_SHORTNAMES
+    #define ChangeEndianness rrChangeEndianness
+    #define Bitmap rrBitmap
+    #define InitImage rrInitImage
+    #define Blit rrBlit
+    #define BlitScaled rrBlitScaled
+    #define DrawPixel rrDrawPixel
+    #define Clear rrClear
+    #define DrawRectangle rrDrawRectangle
+    #define DrawRectangleLines rrDrawRectangleLines
+    #define DrawTriangleLines rrDrawTriangleLines
+    #define DrawTriangle rrDrawTriangle
+    #define DrawCircle rrDrawCircle
+    #define DrawCircleLines rrDrawCircleLines
+    #define DrawLine rrDrawLine
+    #define CopySurface rrCopySurface
+    #define FreeSurface rrFreeSurface
+    #define SetBlendMode rrSetBlendMode
+#endif
+
 #endif

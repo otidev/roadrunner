@@ -44,4 +44,12 @@ typedef struct rrRect {
 	float height;
 } rrRect;
 
+#ifdef RR_SHORTNAMES
+    #define BlendMode rrBlendMode
+    #define Surface rrSurface
+    #define Point rrPoint
+    #define Tri rrTri
+    #define Rect rrRect
+#endif
+
 #endif
