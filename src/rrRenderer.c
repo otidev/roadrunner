@@ -108,8 +108,8 @@ void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect
 		for (int x = 0; x < (int)dstRect.width; x++) {
 			int posY = (flipY ? (int)((dstRect.height - 1 - y) * yScale) : (int)(y * yScale));
 			int posX = (flipX ? (int)((dstRect.width - 1 - x) * xScale) : (int)(x * xScale));
-			int dstY = (int)(sin(rotation * DEG2RAD) * (x - (int)center.x) + cos(rotation * DEG2RAD) * (y - (int)center.y));
-			int dstX = (int)(cos(rotation * DEG2RAD) * (x - (int)center.x) - sin(rotation * DEG2RAD) * (y - (int)center.y));
+			int dstY = (int)(sin(rotation * DEG2RAD) * (x - (int)center.x) + cos(rotation * DEG2RAD) * (y - (int)center.y)) + (int)center.y;
+			int dstX = (int)(cos(rotation * DEG2RAD) * (x - (int)center.x) - sin(rotation * DEG2RAD) * (y - (int)center.y)) + (int)center.x;
 
 			if ((dstY + (int)dstRect.y) < dstSurf->height && (dstY + (int)dstRect.y) >= 0 && (dstX + (int)dstRect.x) < dstSurf->width && (dstX + (int)dstRect.x) >= 0) {
 				if (dstSurf->blendMode == RR_MODE_BLEND) {
