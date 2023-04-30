@@ -32,9 +32,10 @@ void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos, float rotation)
 // dstSurf - Destination surface.
 // srcRect - Rectangle in srcSurf where we should blit.
 // dstRect - Rectangle in dstSurf where we should blit.
+// center - Center of rotaiton (NOTE: offsets the bitmap)
 // rotation - How many degrees srcSurf should be spun.
 // NOTE: As of now, the alpha formula is Asrc = Adst.
-void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect, float rotation);
+void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect, rrPoint center, float rotation);
 
 // Draws a pixel on a surface.
 // pos - Pixel position.

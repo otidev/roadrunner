@@ -17,7 +17,7 @@ int main() {
 	rrDrawTriangle((rrTri){(rrPoint){40, 20}, (rrPoint){40, 30}, (rrPoint){80, 30}}, 0x00ff00ff, &mainSurface);
 	rrDrawRectangleLines((rrRect){20, 20, 10, 10}, 0xffffffff, &mainSurface);
 	rrDrawRectangle((rrRect){30, 30, 10, 10}, 0xffff00f0, &mainSurface);
-	rrBlitScaled(&sth, &mainSurface, (rrRect){0, 0, -16, 32}, (rrRect){(mainSurface.height / 2) - (32 / 2), (mainSurface.height / 2) - (64 / 2), 32, 64}, 180);
+	rrBlitScaled(&sth, &mainSurface, (rrRect){0, 0, 16, 32}, (rrRect){(mainSurface.height / 2) - (32 / 2), (mainSurface.height / 2) - (64 / 2), 32, 64}, (rrPoint){16 / 2, 32 / 2}, 0);
 	rrSetBlendMode(&mainSurface, RR_MODE_NONE);
 
 	rrChangeEndianness(&mainSurface);

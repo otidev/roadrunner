@@ -5,12 +5,12 @@
 
 static void _rrGetBlended(uint32_t* screenPixel, uint32_t imagePixel) {
 	// Thank you, Dainel Peñalba (https://stackoverflow.com/a/36089930) and SDL
-	
+
 	// Separating the colour values
 	uint8_t dstR = (*screenPixel & 0xff000000) >> 24;
 	uint8_t dstG = (*screenPixel & 0x00ff0000) >> 16;
 	uint8_t dstB = (*screenPixel & 0x0000ff00) >> 8;
-	
+
 	uint8_t srcR = (imagePixel & 0xff000000) >> 24;
 	uint8_t srcG = (imagePixel & 0x00ff0000) >> 16;
 	uint8_t srcB = (imagePixel & 0x0000ff00) >> 8;
@@ -63,26 +63,24 @@ void rrBlit(rrSurface* srcSurf, rrSurface* dstSurf, rrPoint pos, float rotation)
 	// Each pixel on image is equal to screen.
 	for (int y = 0; y < srcSurf->height; y++) {
 		for (int x = 0; x < srcSurf->width; x++) {
-			if ((y + (int)pos.y) < dstSurf->height && (y + (int)pos.y) >= 0 && (x + (int)pos.x) < dstSurf->width && (x + (int)pos.x) >= 0) {
+			int dstY = (int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y);
+			int dstX = (int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y);
+
+			if ((dstY + (int)pos.y) < dstSurf->height && (dstY + (int)pos.y) >= 0 && (dstX + (int)pos.x) < dstSurf->width && (dstX + (int)pos.x) >= 0) {
 				if (dstSurf->blendMode == RR_MODE_BLEND) {
 					_rrGetBlended(
-						&screenPixel[
-							((int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) + (int)pos.y) * dstSurf->width + ((int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y) + (int)pos.x)
-						],
+						&screenPixel[(dstY + (int)pos.y) * dstSurf->width + (dstX + (int)pos.x)],
 						imagePixel[y * srcSurf->width + x]
 					);
 				} else {
-					screenPixel[
-						((int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) + (int)pos.y) * dstSurf->width + ((int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y) + (int)pos.x)
-					] = imagePixel[y * srcSurf->width + x];
-					printf("%d\n", (y + (int)pos.y));
+					screenPixel[(dstY + (int)pos.y) * dstSurf->width + (dstX + (int)pos.x)] = imagePixel[y * srcSurf->width + x];
 				}
 			}
 		}
 	}
 }
 
-void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect, float rotation) {
+void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect dstRect, rrPoint center, float rotation) {
 	uint32_t* screenPixel = (uint32_t*)dstSurf->pixels + (((int)dstRect.y * dstSurf->width) + (int)dstRect.x);
 	uint32_t* imagePixel = (uint32_t*)srcSurf->pixels + (((int)srcRect.y * srcSurf->width) + (int)srcRect.x);
 
@@ -94,7 +92,7 @@ void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect
 		width = -srcRect.width;
 		flipX = true;
 	}
-	
+
 	if (srcRect.height >= 0) {
 		height = srcRect.height;
 	} else {
@@ -108,17 +106,16 @@ void rrBlitScaled(rrSurface* srcSurf, rrSurface* dstSurf, rrRect srcRect, rrRect
 
 	for (int y = 0; y < (int)dstRect.height; y++) {
 		for (int x = 0; x < (int)dstRect.width; x++) {
-			if ((y + (int)dstRect.y) < dstSurf->height && (y + (int)dstRect.y) >= 0 && (x + (int)dstRect.x) < dstSurf->width && (x + (int)dstRect.x) >= 0) {
-				int posY = (flipY ? (int)((dstRect.height - 1 - y) * yScale) : (int)(y * yScale));
-				int posX = (flipX ? (int)((dstRect.width - 1 - x) * xScale) : (int)(x * xScale));
+			int posY = (flipY ? (int)((dstRect.height - 1 - y) * yScale) : (int)(y * yScale));
+			int posX = (flipX ? (int)((dstRect.width - 1 - x) * xScale) : (int)(x * xScale));
+			int dstY = (int)(sin(rotation * DEG2RAD) * (x - (int)center.x) + cos(rotation * DEG2RAD) * (y - (int)center.y));
+			int dstX = (int)(cos(rotation * DEG2RAD) * (x - (int)center.x) - sin(rotation * DEG2RAD) * (y - (int)center.y));
+
+			if ((dstY + (int)dstRect.y) < dstSurf->height && (dstY + (int)dstRect.y) >= 0 && (dstX + (int)dstRect.x) < dstSurf->width && (dstX + (int)dstRect.x) >= 0) {
 				if (dstSurf->blendMode == RR_MODE_BLEND) {
-					_rrGetBlended(&screenPixel[
-						(int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) * dstSurf->width + (int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y)
-					], imagePixel[posY * (int)srcSurf->width + posX]);
+					_rrGetBlended(&screenPixel[dstY * dstSurf->width + dstX], imagePixel[posY * (int)srcSurf->width + posX]);
 				} else {
-					screenPixel[
-						(int)(sin(rotation * DEG2RAD) * x + cos(rotation * DEG2RAD) * y) * dstSurf->width + (int)(cos(rotation * DEG2RAD) * x - sin(rotation * DEG2RAD) * y)
-					] = imagePixel[posY * (int)srcSurf->width + posX];
+					screenPixel[dstY * dstSurf->width + dstX] = imagePixel[posY * (int)srcSurf->width + posX];
 				}
 			}
 		}
@@ -150,7 +147,7 @@ void rrClear(uint32_t colour, rrSurface* surf) {
 void rrDrawRectangle(rrRect rect, uint32_t colour, rrSurface* surf) {
 	uint32_t* pixel = (uint32_t*)surf->pixels;
 	pixel += ((int)rect.y * surf->width) + (int)rect.x;
-	
+
 	for (int y = 0; y < (int)rect.height; y++) {
 		for (int x = 0; x < (int)rect.width; x++) {
 			if ((y + (int)rect.y) < surf->height && (y + (int)rect.y) >= 0 && (x + (int)rect.x) < surf->width && (x + (int)rect.x) >= 0) {
@@ -167,7 +164,7 @@ void rrDrawRectangle(rrRect rect, uint32_t colour, rrSurface* surf) {
 void rrDrawRectangleLines(rrRect rect, uint32_t colour, rrSurface* surf) {
 	uint32_t* pixel = (uint32_t*)surf->pixels;
 	pixel += ((int)rect.y * surf->width) + (int)rect.x;
-	
+
 	for (int y = 0; y < (int)rect.height; y++) {
 		for (int x = 0; x < (int)rect.width; x++) {
 			if ((y + (int)rect.y) < surf->height && (y + (int)rect.y) >= 0 && (x + (int)rect.x) < surf->width && (x + (int)rect.x) >= 0) {
@@ -205,7 +202,7 @@ void rrDrawTriangle(rrTri triangle, uint32_t colour, rrSurface* surf) {
 	}
 
 	// Thanks to this thread for the following code (https://stackoverflow.com/questions/34923406/filling-a-triangle-algorithm)
-	
+
 	double dx1 = (triangle.thirdPoint.x - triangle.firstPoint.x) / (triangle.thirdPoint.y - triangle.firstPoint.y);
 	double dx2 = (triangle.secondPoint.x - triangle.firstPoint.x) / (triangle.secondPoint.y - triangle.firstPoint.y);
 	double dx3 = (triangle.thirdPoint.x - triangle.secondPoint.x) / (triangle.thirdPoint.y - triangle.secondPoint.y);
@@ -218,7 +215,7 @@ void rrDrawTriangle(rrTri triangle, uint32_t colour, rrSurface* surf) {
 		x1 += dx1;
 		x2 += dx2;
 	}
-	
+
 	x2 = triangle.secondPoint.x;
 
 	// loop through coordinates
@@ -335,7 +332,7 @@ void rrDrawLine(rrPoint startPos, rrPoint endPos, uint32_t colour, rrSurface* s)
 			startPos.y += srcY;
 		}
 	}
-	
+
 }
 
 void rrCopySurface(rrSurface* surf, void* dstPixels) {
