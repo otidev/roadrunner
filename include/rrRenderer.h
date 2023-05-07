@@ -1,5 +1,5 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef RR_RENDERER_H
+#define RR_RENDERER_H
 
 #include "rrInclude.h"
 

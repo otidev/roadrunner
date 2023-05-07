@@ -1,5 +1,5 @@
-#ifndef INCLUDE_H
-#define INCLUDE_H
+#ifndef RR_INCLUDE_H
+#define RR_INCLUDE_H
 
 #include <stdio.h>
 #include <stdlib.h>
