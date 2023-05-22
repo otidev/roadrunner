@@ -17,7 +17,7 @@ void rrBitmap(rrSurface* surf, int width, int height);
 // surf - Destination surface.
 // filename - The filename of the image.
 // NOTE: stbi is little-endian!
-void rrInitImage(rrSurface* surf, char* filename);
+void rrBitmapImage(rrSurface* surf, char* filename);
 
 // Blits a surface onto another surface.
 // srcSurf - Source surface.

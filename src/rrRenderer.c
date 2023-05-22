@@ -47,7 +47,7 @@ void rrBitmap(rrSurface* surf, int width, int height) {
 	surf->blendMode = RR_MODE_NONE;
 }
 
-void rrInitImage(rrSurface* surf, char* filename) {
+void rrBitmapImage(rrSurface* surf, char* filename) {
 	surf->pixels = (uint32_t*)stbi_load(filename, &surf->width, &surf->height, &surf->bytesPerPixel, 0);
 
 	// Reverse for big-endianness.

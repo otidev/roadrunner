@@ -11,7 +11,7 @@ int main() {
 	rrDrawCircleLines((rrPoint){(mainSurface.width / 2), (mainSurface.height / 2)}, (mainSurface.height / 2), 0xffffffff, &mainSurface);
 	rrDrawCircle((rrPoint){(mainSurface.width / 2), (mainSurface.height / 2)}, 20 - 1, 0x7f7f7fff, &mainSurface);
 
-	rrInitImage(&sth, "tojisnip.png");
+	rrBitmapImage(&sth, "tojisnip.png");
 
 	rrSetBlendMode(&mainSurface, RR_MODE_BLEND);
 	rrDrawTriangle((rrTri){(rrPoint){40, 20}, (rrPoint){40, 30}, (rrPoint){80, 30}}, 0x00ff00ff, &mainSurface);
