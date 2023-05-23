@@ -335,6 +335,47 @@ void rrDrawLine(rrPoint startPos, rrPoint endPos, uint32_t colour, rrSurface* s)
 
 }
 
+void rrLoadFont(rrFont* font, char* fontFilename, int codepage) {
+	font->codepage = codepage;
+	if (codepage == 0) {
+		font->numGlyphs = 128 - 32;
+	} if (codepage == 1252) {
+		font->numGlyphs = 256 - 32;
+	}
+	rrBitmapImage(&font->surface, fontFilename);
+
+	font->glyphs = malloc(sizeof(rrGlyph) * font->numGlyphs);
+
+
+	int x = 0, y = 1; // Start in the character
+	for (int i = 0; i < font->numGlyphs; i++) {
+		uint32_t origPixel = font->surface.pixels[0];
+		int w = 0, h = 0;
+		x += 1;
+
+		while (font->surface.pixels[y * font->surface.width + (x + w)] != origPixel) {
+			w++;
+		}
+
+		printf("%d ", w);
+		while (font->surface.pixels[(y + h) * font->surface.width + x] != origPixel) {
+			h++;
+		}
+		printf("%d ", h);
+
+		if (w == 0) {
+			y += font->glyphs[0].rect.height + 1;
+			x = 0;
+			i--;
+		} else {
+			font->glyphs[i] = (rrGlyph){(rrRect){x, y, w, h}};
+			if (font->surface.pixels[y * font->surface.width + (x + w)] == origPixel) {
+				x += w;
+			}
+		}
+	}
+}
+
 void rrCopySurface(rrSurface* surf, void* dstPixels) {
 	memcpy(dstPixels, surf->pixels, surf->width * surf->height * surf->bytesPerPixel);
 }

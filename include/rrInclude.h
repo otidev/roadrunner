@@ -44,12 +44,25 @@ typedef struct rrRect {
 	float height;
 } rrRect;
 
+typedef struct rrGlyph {
+	rrRect rect;
+} rrGlyph;
+
+typedef struct rrFont {
+	int codepage;
+	int numGlyphs;
+	rrGlyph* glyphs;
+	rrSurface surface;
+} rrFont;
+
 #ifdef RR_SHORTNAMES
     #define BlendMode rrBlendMode
     #define Surface rrSurface
     #define Point rrPoint
     #define Tri rrTri
     #define Rect rrRect
+    #define Glyph rrGlyph
+    #define Font rrFont
 #endif
 
 #endif

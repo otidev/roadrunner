@@ -16,7 +16,6 @@ void rrBitmap(rrSurface* surf, int width, int height);
 // Opens an image into a surface using stbi.
 // surf - Destination surface.
 // filename - The filename of the image.
-// NOTE: stbi is little-endian!
 void rrBitmapImage(rrSurface* surf, char* filename);
 
 // Blits a surface onto another surface.
@@ -93,6 +92,12 @@ void rrDrawCircleLines(rrPoint center, int radius, uint32_t colour, rrSurface* s
 // surf - Destination surface.
 void rrDrawLine(rrPoint startPos, rrPoint endPos, uint32_t colour, rrSurface* surf);
 
+// Loads a font.
+// font - The font to load into.
+// fontFilename - The filename of the font to load.
+// codepage - The codepage of the font.
+void rrLoadFont(rrFont* font, char* fontFilename, int codepage);
+
 // Copies a whole surface to a whole array of pixels.
 // surf - Source surface.
 // dstPixels - Destination array of pixels not used by roadrunner.
@@ -100,7 +105,7 @@ void rrCopySurface(rrSurface* surf, void* dstPixels);
 
 // Frees a surface.
 // surf - Surface to free.
-// NOTE: This does not destroy a surface, only its *pixels*. It makes the surface unusable unless you init it again.
+// NOTE: This does not free a surface, only its *pixels*. It then NULLs the surface.
 void rrFreeSurface(rrSurface* surf);
 
 // Sets the blend mode of a surface.
