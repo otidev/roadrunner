@@ -357,11 +357,9 @@ void rrLoadFont(rrFont* font, char* fontFilename, int codepage) {
 			w++;
 		}
 
-		printf("%d ", w);
 		while (font->surface.pixels[(y + h) * font->surface.width + x] != origPixel) {
 			h++;
 		}
-		printf("%d ", h);
 
 		if (w == 0) {
 			y += font->glyphs[0].rect.height + 1;
