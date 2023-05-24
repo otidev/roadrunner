@@ -44,6 +44,7 @@ void rrBitmap(rrSurface* surf, int width, int height) {
 	surf->height = height;
 	surf->bytesPerPixel = 4; // Forcing this for now, can change later
 	surf->pixels = malloc(width * height * surf->bytesPerPixel);
+	memset(surf->pixels, 0, width * height * surf->bytesPerPixel);
 	surf->blendMode = RR_MODE_NONE;
 }
 

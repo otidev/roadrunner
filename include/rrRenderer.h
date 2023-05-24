@@ -108,7 +108,7 @@ int rrTextWidth(rrFont* font, char* text);
 // text - The text to calculate.
 int rrTextHeight(rrFont* font, char* text);
 
-// Draws text (with blending).
+// Draws text.
 // font - The font to use.
 // pos - The point to start rendering.
 // text - The text to render.
