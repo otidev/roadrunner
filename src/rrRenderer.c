@@ -424,7 +424,7 @@ static const char* DecodeUTF8(const char* text, int* cp) {
 }
 
 int rrTextWidth(rrFont* font, char* text) {
-	int x = 0;
+	int x = 0, width = 0;
 	const char* pointer = text;
 	for (int i = 0; i < strlen(text); i++) {
 		int letter = *(char*)(text + i);
@@ -432,14 +432,16 @@ int rrTextWidth(rrFont* font, char* text) {
 
 		if (letter == '\t') {
 			x += rrTextWidth(font, " ") * 4; // deal with it.
+			width = x > width ? x : width;
+		} if (letter == '\n') {
+			x = 0;
 		} else {
-			if (letter != '\n') {
-				x += font->glyphs[letter - 32].rect.width;
-			}
+			x += font->glyphs[letter - 32].rect.width;
+			width = x > width ? x : width;
 		}
 	}
 
-	return x;
+	return width;
 }
 
 int rrTextHeight(rrFont* font, char* text) {
