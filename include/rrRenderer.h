@@ -98,6 +98,23 @@ void rrDrawLine(rrPoint startPos, rrPoint endPos, uint32_t colour, rrSurface* su
 // codepage - The codepage of the font.
 void rrLoadFont(rrFont* font, char* fontFilename, int codepage);
 
+// Returns the width of text.
+// font - The font to calculate with.
+// text - The text to calculate.
+int rrTextWidth(rrFont* font, char* text);
+
+// Returns the height of text.
+// font - The font to calculate with.
+// text - The text to calculate.
+int rrTextHeight(rrFont* font, char* text);
+
+// Draws text (with blending).
+// font - The font to use.
+// pos - The point to start rendering.
+// text - The text to render.
+// surf - Destination surface.
+void rrDrawText(rrFont* font, rrPoint pos, char* text, rrSurface* surf);
+
 // Copies a whole surface to a whole array of pixels.
 // surf - Source surface.
 // dstPixels - Destination array of pixels not used by roadrunner.
@@ -128,6 +145,10 @@ void rrSetBlendMode(rrSurface* surf, rrBlendMode blend);
     #define DrawCircle rrDrawCircle
     #define DrawCircleLines rrDrawCircleLines
     #define DrawLine rrDrawLine
+    #define LoadFont rrLoadFont
+    #define TextWidth rrTextWidth
+    #define TextHeight rrTextHeight
+    #define DrawText rrDrawText
     #define CopySurface rrCopySurface
     #define FreeSurface rrFreeSurface
     #define SetBlendMode rrSetBlendMode

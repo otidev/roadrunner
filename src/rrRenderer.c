@@ -335,6 +335,12 @@ void rrDrawLine(rrPoint startPos, rrPoint endPos, uint32_t colour, rrSurface* s)
 
 }
 
+static int cp1252[] = {
+    0x20ac, 0xfffd, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6, 0x2030, 0x0160, 0x2039, 0x0152,
+    0xfffd, 0x017d, 0xfffd, 0xfffd, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122,
+    0x0161, 0x203a, 0x0153, 0xfffd, 0x017e, 0x0178,
+};
+
 void rrLoadFont(rrFont* font, char* fontFilename, int codepage) {
 	font->codepage = codepage;
 	if (codepage == 0) {
@@ -366,11 +372,112 @@ void rrLoadFont(rrFont* font, char* fontFilename, int codepage) {
 			x = 0;
 			i--;
 		} else {
+			if (i > 128 && i < 160) {
+				font->glyphs[i].code = cp1252[i - 128];
+			} else {
+				font->glyphs[i].code = i;
+			}
+
 			font->glyphs[i] = (rrGlyph){(rrRect){x, y, w, h}};
 			if (font->surface.pixels[y * font->surface.width + (x + w)] == origPixel) {
 				x += w;
 			}
 		}
+	}
+}
+
+// Taken from Tigr
+static const char* DecodeUTF8(const char* text, int* cp) {
+    unsigned char c = *text++;
+    int extra = 0, min = 0;
+    *cp = 0;
+    if (c >= 0xf0) {
+        *cp = c & 0x07;
+        extra = 3;
+        min = 0x10000;
+    } else if (c >= 0xe0) {
+        *cp = c & 0x0f;
+        extra = 2;
+        min = 0x800;
+    } else if (c >= 0xc0) {
+        *cp = c & 0x1f;
+        extra = 1;
+        min = 0x80;
+    } else if (c >= 0x80) {
+        *cp = 0xfffd;
+    } else {
+        *cp = c;
+    }
+    while (extra--) {
+        c = *text++;
+        if ((c & 0xc0) != 0x80) {
+            *cp = 0xfffd;
+            break;
+        }
+        (*cp) = ((*cp) << 6) | (c & 0x3f);
+    }
+    if (*cp < min) {
+        *cp = 0xfffd;
+    }
+    return text;
+}
+
+int rrTextWidth(rrFont* font, char* text) {
+	int x = 0;
+	const char* pointer = text;
+	for (int i = 0; i < strlen(text); i++) {
+		int letter = *(char*)(text + i);
+		pointer = DecodeUTF8(pointer, &letter);
+
+		if (letter == '\t') {
+			x += rrTextWidth(font, " ") * 4; // deal with it.
+		} else {
+			if (letter != '\n') {
+				x += font->glyphs[letter - 32].rect.width;
+			}
+		}
+	}
+
+	return x;
+}
+
+int rrTextHeight(rrFont* font, char* text) {
+	int y = font->glyphs[0].rect.height;
+	const char* pointer = text;
+	for (int i = 0; i < strlen(text); i++) {
+		int letter = *(char*)(text + i);
+		pointer = DecodeUTF8(pointer, &letter);
+
+		if (letter == '\n') {
+			y += font->glyphs[0].rect.height;
+		}
+	}
+
+	return y;
+}
+
+void rrDrawText(rrFont* font, rrPoint pos, char* text, rrSurface* surf) {
+	int x = pos.x, y = pos.y;
+	const char* pointer = text;
+	for (int i = 0; i < strlen(text); i++) {
+		int letter = *(char*)(text + i);
+		pointer = DecodeUTF8(pointer, &letter);
+
+		if (letter == '\n') {
+			x = pos.x;
+			y += rrTextHeight(font, " ");
+			goto done;
+		}
+
+		if (letter == '\t') {
+			x += rrTextWidth(font, " ") * 4;
+			goto done;
+		}
+
+		rrBlitScaled(&font->surface, surf, font->glyphs[letter - 32].rect, (rrRect){x, y, font->glyphs[letter - 32].rect.width, font->glyphs[letter - 32].rect.height}, (rrPoint){0}, 0);
+		x += font->glyphs[letter - 32].rect.width;
+
+		done:
 	}
 }
 

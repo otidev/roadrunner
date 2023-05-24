@@ -46,6 +46,7 @@ typedef struct rrRect {
 
 typedef struct rrGlyph {
 	rrRect rect;
+	int code;
 } rrGlyph;
 
 typedef struct rrFont {

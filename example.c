@@ -23,9 +23,7 @@ int main() {
 	rrDrawRectangle((rrRect){30, 30, 10, 10}, 0xffff00f0, &mainSurface);
 	rrBlitScaled(&sth, &mainSurface, (rrRect){0, 0, 16, 32}, (rrRect){(mainSurface.height / 2) - (32 / 2), (mainSurface.height / 2) - (64 / 2), 32, 64}, (rrPoint){16 / 2, 32 / 2}, 0);
 
-	for (int i = 0; i < font.numGlyphs; i++) {
-		rrBlitScaled(&font.surface, &mainSurface, font.glyphs[i].rect, font.glyphs[i].rect, (rrPoint){16 / 2, 32 / 2}, 0);
-	}
+	rrDrawText(&font, (rrPoint){0, mainSurface.height - rrTextHeight(&font, "Roadrunner!")}, "Roadrunner!", &mainSurface);
 
 	rrSetBlendMode(&mainSurface, RR_MODE_NONE);
 

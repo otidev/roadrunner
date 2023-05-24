@@ -15,6 +15,7 @@ A simple 2D software renderer written in C with no dependencies.
 - Pure C99
 - Shapes rendering (triangles, rectangles, circles), which can all be filled or not
 - Line rendering
+- Text rendering
 - Simple image loading (with the help of stb_image(_write).h) and rendering
 - A endianness switcher (from RGBA to ABGR)
 
@@ -22,3 +23,5 @@ A simple 2D software renderer written in C with no dependencies.
 
 - Sometimes line rendering breaks the program
 - Rotation is a bit faulty
+
+Huge thanks to [Tigr](https://github.com/erkkah/tigr), a lot of Roadrunner's code snippets are from there!
